@@ -1,6 +1,7 @@
 package com.example.practice1.controller;
 
 
+import com.example.practice1.dto.PostResponse;
 import com.example.practice1.service.PostService;
 import com.example.practice1.dto.CreatePostRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class PostController {
     public String createPost(@RequestBody CreatePostRequest req){
 
         System.out.println(req);
-
+        PostResponse response = postService.save(req);
         return "post";
     }
 
