@@ -1,4 +1,4 @@
-package com.example.practice1.dto;
+package com.example.practice1.controller.dto;
 
 public class PostResponse {
     public Long id;
