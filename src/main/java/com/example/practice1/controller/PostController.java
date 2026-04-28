@@ -1,9 +1,9 @@
 package com.example.practice1.controller;
 
 
+import com.example.practice1.controller.dto.PostRequest;
 import com.example.practice1.controller.dto.PostResponse;
 import com.example.practice1.service.PostService;
-import com.example.practice1.controller.dto.CreatePostRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,44 +20,37 @@ public class PostController {
     }
 
     //개시글 생성
-    //Contoller 계층에서 유형성 검사도 같이 함.
+    //Controller 계층에서 유형성 검사도 같이 함.
     //계층별 역할
     @PostMapping("/api/posts")
-    public String createPost(@RequestBody CreatePostRequest req){
+    public String createPost(@RequestBody PostRequest req){
 
         System.out.println(req);
         PostResponse response = postService.save(req);
         return "post";
     }
 
-
-
     @GetMapping("/api/posts")
     public List finAllPosts(){
-
-
-        return null;
+        return postService.findAll();
     }
 
-
     @GetMapping("/api/posts/{id}")
-    public List findPostById(int id){
-
-
-        return null;
+    public PostResponse findPostById(@PathVariable Long id){
+        return postService.findById(id);
     }
 
 
     @PutMapping("/api/posts/{id}")
-    public List updatePost(int id){
-
-
-        return null;
+    public String updatePost(@PathVariable Long id, @RequestBody PostRequest req){
+        postService.update(id, req);
+        return "수정 성공";
     }
 
     @DeleteMapping("/api/posts/{id}")
-    public String deletePost(int id){
-        return null;
+    public String deletePost(@PathVariable Long id){
+        postService.delete(id);
+        return "삭제 성공";
     }
 
 
