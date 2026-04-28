@@ -1,12 +1,12 @@
 package com.example.practice1.entity;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Data
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostEntity {
 
     private Long id;
@@ -15,5 +15,12 @@ public class PostEntity {
     private String author;
 
 
+    public PostEntity(String title, String content, String author) {
+    }
+    public void update(String title, String content, String author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+    }
 
 }
