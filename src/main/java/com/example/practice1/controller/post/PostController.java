@@ -1,8 +1,8 @@
-package com.example.practice1.controller;
+package com.example.practice1.controller.post;
 
 
-import com.example.practice1.controller.dto.post.PostRequest;
-import com.example.practice1.controller.dto.post.PostResponse;
+import com.example.practice1.dto.post.PostRequest;
+import com.example.practice1.dto.post.PostResponse;
 import com.example.practice1.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
