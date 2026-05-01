@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -16,6 +16,10 @@ public class MemberEntity {
     private String loginId;
     private String password;
     private String name;
+
+    public void assignId(Long id){
+        this.id = id;
+    }
 
 
 }
