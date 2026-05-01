@@ -1,4 +1,4 @@
-package com.example.practice1.controller.dto.post;
+package com.example.practice1.dto.post;
 
 
 import lombok.AllArgsConstructor;

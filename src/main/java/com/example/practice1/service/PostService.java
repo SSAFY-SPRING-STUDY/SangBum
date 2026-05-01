@@ -1,8 +1,8 @@
 package com.example.practice1.service;
 
 
-import com.example.practice1.controller.dto.post.PostRequest;
-import com.example.practice1.controller.dto.post.PostResponse;
+import com.example.practice1.dto.post.PostRequest;
+import com.example.practice1.dto.post.PostResponse;
 import com.example.practice1.entity.PostEntity;
 import com.example.practice1.repository.post.PostRepository;
 import org.springframework.stereotype.Service;
