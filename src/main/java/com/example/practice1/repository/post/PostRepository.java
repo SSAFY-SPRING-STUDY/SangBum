@@ -1,4 +1,4 @@
-package com.example.practice1.repository;
+package com.example.practice1.repository.post;
 
 import com.example.practice1.entity.PostEntity;
 import org.springframework.stereotype.Repository;
