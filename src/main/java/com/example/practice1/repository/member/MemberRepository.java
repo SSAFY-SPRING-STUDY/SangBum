@@ -22,10 +22,10 @@ public class MemberRepository {
         return member;
     };
 
-    Optional<MemberEntity> findByLoginId(String loginId){
+    public Optional<MemberEntity> findByLoginId(String loginId){
         return memberStore.values().stream().filter(member -> member.getLoginId().equals(loginId)).findFirst();
     }
-    Optional<MemberEntity> findById(Long id){
+    public Optional<MemberEntity> findById(Long id){
             return Optional.ofNullable(memberStore.get(id));
     };
 
