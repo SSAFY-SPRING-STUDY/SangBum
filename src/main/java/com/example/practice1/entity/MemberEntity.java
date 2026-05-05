@@ -1,10 +1,7 @@
 package com.example.practice1.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +13,13 @@ public class MemberEntity {
     private String loginId;
     private String password;
     private String name;
+
+    public MemberEntity(String loginId, String password, String name) {
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+    }
+
 
     public void assignId(Long id){
         this.id = id;
