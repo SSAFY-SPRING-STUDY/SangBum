@@ -29,8 +29,7 @@ public class AuthService {
 
         return new LoginResponse(token,"Bearer");
     }
-    public void logout(String Token){
+    public void logout(String token){
         sessionManager.removeSession(token);
-
     }
 }
