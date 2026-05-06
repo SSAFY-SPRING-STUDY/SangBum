@@ -23,19 +23,18 @@ public class MemberController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/members")
     public MemberResponse join(@RequestBody MemberRequest req){
-        memberService.save(req);
-        return new MemberResponse(req.loginId(),req.password(),req.name());
+        return memberService.save(req);
     }
 
     @GetMapping("/api/members/me")
     public MemberResponse me(@RequestHeader(value = "Authorization", required = false) String authorization){
-        String token = authorization.substring("Bearer ".length());
-        Long memberId = sessionManager.getMemberId(token);
-        try{
-            return   memberService.findById(memberId);
-        }catch(IllegalArgumentException e){
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
+        String token = authorization.substring("Bearer ".length());
+        Long memberId = sessionManager.getMemberId(token);
+
+        return memberService.findById(memberId);
     }
 }

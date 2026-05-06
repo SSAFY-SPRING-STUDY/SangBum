@@ -31,7 +31,18 @@ public class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/api/auth/logout")
     public void logout(@RequestHeader(value="Authorization", required=false) String authorization){
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         String token = authorization.substring("Bearer ".length());
+
+
+        Long memberId = sessionManager.getMemberId(token);
+
+        if (memberId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         authService.logout(token);
     }
 }
