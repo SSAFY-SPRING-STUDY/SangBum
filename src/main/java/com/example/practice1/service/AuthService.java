@@ -19,7 +19,7 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest req) {
         MemberEntity member = memberRepository.findByLoginId(req.loginId())
-                .orElseThrow(()-> new IllegalArgumentException("아이디 똔느 비밀번호가 올바르지 않습니다."));
+                .orElseThrow(()-> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
 
         if(!member.getPassword().equals(req.password())) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
