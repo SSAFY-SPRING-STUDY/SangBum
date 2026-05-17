@@ -1,80 +1,78 @@
 package com.example.practice1.service;
 
-
+import com.example.practice1.common.exception.CustomException;
+import com.example.practice1.common.exception.ErrorCode;
 import com.example.practice1.dto.post.PostRequest;
 import com.example.practice1.dto.post.PostResponse;
+import com.example.practice1.entity.MemberEntity;
 import com.example.practice1.entity.PostEntity;
+import com.example.practice1.repository.member.MemberRepository;
 import com.example.practice1.repository.post.PostRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PostService {
-    private final PostRepository postRepository;
 
-    public PostService(PostRepository postRepository) {
+    private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
+
+    public PostService(PostRepository postRepository, MemberRepository memberRepository) {
         this.postRepository = postRepository;
+        this.memberRepository = memberRepository;
     }
 
-    public PostResponse save(PostRequest req) {
-        PostEntity post = new PostEntity(
-                req.getTitle(),
-                req.getContent(),
-                req.getAuthor()
-        );
+    public PostResponse create(PostRequest request, Long authorId) {
+        MemberEntity author = findMember(authorId);
+        PostEntity post = request.toEntity(author);
         PostEntity saved = postRepository.save(post);
 
-        return new PostResponse(
-                saved.getId(),
-                saved.getTitle(),
-                saved.getContent(),
-                saved.getAuthor()
-        );
+        return PostResponse.from(saved);
     }
 
-// findAll
     public List<PostResponse> findAll() {
-        List<PostEntity> posts = new ArrayList<>();
-        posts = postRepository.findAll();
-        List<PostResponse> responses = new ArrayList<>();
-        for(PostEntity post : posts) {
-            PostResponse postResp = new PostResponse(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getAuthor()
-            );
-            responses.add(postResp);
+        return postRepository.findAll()
+                .stream()
+                .map(PostResponse::from)
+                .toList();
+    }
+
+    public PostResponse getPostById(Long id) {
+        PostEntity post = findPost(id);
+        return PostResponse.from(post);
+    }
+
+    public PostResponse update(PostRequest request, Long id, Long authorId) {
+        MemberEntity author = findMember(authorId);
+        PostEntity post = findPost(id);
+        validateAuthor(post, author);
+
+        post.update(request.title(), request.content());
+        return PostResponse.from(post);
+    }
+
+    public void delete(Long id, Long authorId) {
+        MemberEntity author = findMember(authorId);
+        PostEntity post = findPost(id);
+        validateAuthor(post, author);
+
+        postRepository.delete(post);
+    }
+
+    private MemberEntity findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    private PostEntity findPost(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+    }
+
+    private void validateAuthor(PostEntity post, MemberEntity author) {
+        if (!post.getAuthor().getId().equals(author.getId())) {
+            throw new CustomException(ErrorCode.INVALID_PERMISSION);
         }
-
-        return responses;
     }
-
-
-    public PostResponse findById(Long id) {
-        PostEntity post = postRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("찾는 게시글이 없습니다."));
-        PostResponse postResp = new PostResponse(
-                post.getId(),
-                post.getTitle(),
-                post.getContent(),
-                post.getAuthor()
-        );
-        return postResp;
-    }
-
-    public void update(Long id, PostRequest req) {
-        PostEntity post = postRepository.findById(id).orElseThrow(()->new IllegalArgumentException("게시물이 없습니다."));
-        post.update(req.getTitle(), req.getContent(), req.getAuthor());
-    }
-
-    public void delete(Long id){
-
-        postRepository.findById(id).orElseThrow(()->new IllegalArgumentException());
-        postRepository.deleteById(id);
-    }
-
-
-
 }

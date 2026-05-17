@@ -1,18 +1,21 @@
 package com.example.practice1.dto.post;
 
+import com.example.practice1.dto.member.MemberResponse;
+import com.example.practice1.entity.PostEntity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+public record PostResponse(
+        Long id,
+        String title,
+        String content,
+        MemberResponse memberResponse
+) {
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class PostResponse {
-    public Long id;
-    public String title;
-    public String content;
-    public String author;
+    public static PostResponse from(PostEntity post) {
+        return new PostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                MemberResponse.from(post.getAuthor())
+        );
+    }
 }

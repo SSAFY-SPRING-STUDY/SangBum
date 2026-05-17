@@ -1,25 +1,11 @@
-    package com.example.practice1.dto.post;
+package com.example.practice1.dto.post;
 
+import com.example.practice1.entity.MemberEntity;
+import com.example.practice1.entity.PostEntity;
 
-    import lombok.AllArgsConstructor;
-    import lombok.Getter;
-    import lombok.NoArgsConstructor;
+public record PostRequest(String title, String content) {
 
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public class PostRequest {
-
-        public String title;
-        public String content;
-        public String author;
-
-        @Override
-        public String toString() {
-            return "CreatePostRequest{" +
-                    "title='" + title + '\'' +
-                    ", content='" + content + '\'' +
-                    ", Author='" + author + '\'' +
-                    '}';
-        }
+    public PostEntity toEntity(MemberEntity author) {
+        return PostEntity.create(title, content, author);
     }
+}

@@ -1,26 +1,47 @@
 package com.example.practice1.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class PostEntity {
 
     private Long id;
     private String title;
     private String content;
-    private String author;
+    private MemberEntity author;
 
-
-    public PostEntity(String title, String content, String author) {
+    protected PostEntity() {
     }
-    public void update(String title, String content, String author) {
+
+    private PostEntity(String title, String content, MemberEntity author) {
         this.title = title;
         this.content = content;
         this.author = author;
     }
 
+    public static PostEntity create(String title, String content, MemberEntity author) {
+        return new PostEntity(title, content, author);
+    }
+
+    public void assignId(Long id) {
+        this.id = id;
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public MemberEntity getAuthor() {
+        return author;
+    }
 }
