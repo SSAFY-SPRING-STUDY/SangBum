@@ -1,12 +1,18 @@
 package com.example.practice1.controller.auth;
+
+import com.example.practice1.common.exception.CustomException;
+import com.example.practice1.common.exception.ErrorCode;
+import com.example.practice1.common.response.ApiResponse;
 import com.example.practice1.dto.login.LoginRequest;
 import com.example.practice1.dto.login.LoginResponse;
 import com.example.practice1.service.AuthService;
 import com.example.practice1.service.SessionManager;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
+import com.example.practice1.util.AuthTokenUtils;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
@@ -20,29 +26,34 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/login")
-    public LoginResponse login(@RequestBody LoginRequest req){
-        try{
-            return authService.login(req);
-        }catch(IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest req) {
+        LoginResponse response = authService.login(req);
+
+        return ResponseEntity.ok(ApiResponse.success("로그인 성공", response));
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/api/auth/logout")
-    public void logout(@RequestHeader(value="Authorization", required=false) String authorization){
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<Void> logout(
+            @RequestHeader(value = "Authorization", required = false) String bearerToken
+    ) {
+        String sessionKey = extractSessionKey(bearerToken);
+        authService.logout(sessionKey);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    private String extractSessionKey(String bearerToken) {
+        if (!AuthTokenUtils.isValidBearerToken(bearerToken)) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
-        String token = authorization.substring("Bearer ".length());
 
-
-        Long memberId = sessionManager.getMemberId(token);
+        String sessionKey = AuthTokenUtils.parseBearerToken(bearerToken);
+        Long memberId = sessionManager.getMemberId(sessionKey);
 
         if (memberId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
-        authService.logout(token);
+        return sessionKey;
     }
 }

@@ -1,12 +1,5 @@
 package com.example.practice1.entity;
 
-
-import lombok.*;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
 public class MemberEntity {
 
     private Long id;
@@ -14,16 +7,32 @@ public class MemberEntity {
     private String password;
     private String name;
 
+    protected MemberEntity() {
+    }
+
     public MemberEntity(String loginId, String password, String name) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
     }
 
-
-    public void assignId(Long id){
+    public void assignId(Long id) {
         this.id = id;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
