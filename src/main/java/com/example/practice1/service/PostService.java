@@ -9,6 +9,7 @@ import com.example.practice1.entity.PostEntity;
 import com.example.practice1.repository.member.MemberRepository;
 import com.example.practice1.repository.post.PostRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,14 +24,17 @@ public class PostService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public PostResponse create(PostRequest request, Long authorId) {
         MemberEntity author = findMember(authorId);
-        PostEntity post = request.toEntity(author);
-        PostEntity saved = postRepository.save(post);
 
-        return PostResponse.from(saved);
+        PostEntity post = request.toEntity(author);
+        PostEntity savedPost = postRepository.save(post);
+
+        return PostResponse.from(savedPost);
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponse> findAll() {
         return postRepository.findAll()
                 .stream()
@@ -38,23 +42,30 @@ public class PostService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public PostResponse getPostById(Long id) {
         PostEntity post = findPost(id);
+
         return PostResponse.from(post);
     }
 
+    @Transactional
     public PostResponse update(PostRequest request, Long id, Long authorId) {
         MemberEntity author = findMember(authorId);
         PostEntity post = findPost(id);
+
         validateAuthor(post, author);
 
         post.update(request.title(), request.content());
+
         return PostResponse.from(post);
     }
 
+    @Transactional
     public void delete(Long id, Long authorId) {
         MemberEntity author = findMember(authorId);
         PostEntity post = findPost(id);
+
         validateAuthor(post, author);
 
         postRepository.delete(post);
