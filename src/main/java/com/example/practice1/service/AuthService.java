@@ -7,6 +7,7 @@ import com.example.practice1.dto.login.LoginResponse;
 import com.example.practice1.entity.MemberEntity;
 import com.example.practice1.repository.member.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -19,6 +20,7 @@ public class AuthService {
         this.sessionManager = sessionManager;
     }
 
+    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest req) {
         MemberEntity member = memberRepository.findByLoginId(req.loginId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USERNAME));
@@ -28,6 +30,7 @@ public class AuthService {
         }
 
         String token = sessionManager.createSession(member.getId());
+
         return new LoginResponse(token, "Bearer");
     }
 
